@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Search Results</title>
+  <link rel="stylesheet" href="cyberlink-css/bootstrap.css" />
+  <link rel="stylesheet" href="cyberlink-css/style.css" />
+  <link rel="stylesheet" href="cyberlink-css/font-awesome.min.css" />
+  <style>
+    .search-results {
+      padding: 50px 15px;
+    }
+
+    .search-results h2 {
+      margin-bottom: 15px;
+    }
+
+    .results-count {
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .search-item {
+      padding: 20px;
+      border-bottom: 1px solid #ccc;
+      transition: background-color 0.3s ease;
+    }
+
+    .search-item:hover {
+      background-color: #f9f9f9;
+    }
+
+    .search-item h4 {
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .search-item p {
+      margin-bottom: 10px;
+      color: #555;
+    }
+
+    .highlight {
+      background-color: yellow;
+      font-weight: 700;
+    }
+
+    a.view-details-btn {
+      display: inline-block;
+      padding: 6px 14px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+
+    a.view-details-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container search-results">
+    <h2>Search Results for: <span id="searchQuery"></span></h2>
+    <div id="resultsCount" class="results-count"></div>
+    <div id="resultsContainer">
+      <p>Loading results...</p>
+    </div>
+  </div>
+
+  <script>
+    const services = [
+      {
+        title: "CCTV Installation & Maintenance",
+        description: "Professional CCTV setup for homes and businesses.",
+        keywords: ["cctv", "installation", "security", "surveillance"],
+        url: "cctv.html"
+      },
+      {
+        title: "GPS Vehicle Tracking",
+        description: "Track your fleet with real-time GPS data.",
+        keywords: ["gps", "tracking", "fleet", "vehicle"],
+        url: "cctv.html"
+      },
+      {
+        title: "Internet Installation",
+        description: "Fast and reliable internet for residential and commercial use.",
+        keywords: ["internet", "broadband", "wifi", "installation", "fiber"],
+        url: "fiber.html"
+      },
+  
+	  {
+        title: "CLTeam",
+        description: "You are looking for our team",
+        keywords: ["team", "enginering", "installer", "people", "key", "key person"],
+        url: "team.html"
+      },
+		
+		{
+        title: "Privacy and Data Protection",
+        description: "Your are looking for terms, privacy and data protection",
+        keywords: ["privacy", "investment", "secure", "transsaction", "details", "tearms", "contract"],
+        url: "privacy.html"
+      },
+		
+		 {
+        title: "Sherwin Ceralbo",
+        description: "You are looking for Tata or Sherwin, our key person behind our enginering work",
+        keywords: ["engineer", "sherwin ceralbo", "sherwin", "tata", "secuirty"],
+        url: "tata.html"
+      },
+		
+		 {
+        title: "Solar and Electrical Installation",
+        description: "You are looking Solar and Electrical Installation",
+        keywords: ["solar", "electrical", "solar installer", "solar installation", "solar dingle", "solar panel", "back up", "back up power"],
+        url: "solar.html"
+      },
+		
+		 {
+        title: "Facebook",
+        description: "Cyberlink Official Facebook",
+        keywords: ["fb", "facebook", "messenger"],
+        url: "https://www.facebook.com/cltsolutions10"
+      },
+		
+		
+    ];
+
+    const params = new URLSearchParams(window.location.search);
+    const queryRaw = params.get('q') || "";
+    const query = queryRaw.toLowerCase().trim();
+
+    document.getElementById('searchQuery').textContent = queryRaw || "Nothing";
+
+    const resultsContainer = document.getElementById('resultsContainer');
+    const resultsCount = document.getElementById('resultsCount');
+
+    // Function to escape special characters in regex
+    function escapeRegExp(string) {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // Function to highlight matched terms in text
+    function highlight(text, term) {
+      if (!term) return text;
+      const regex = new RegExp(`(${escapeRegExp(term)})`, 'gi');
+      return text.replace(regex, '<span class="highlight">$1</span>');
+    }
+
+    resultsContainer.innerHTML = "";
+
+    if (!query || query.length < 2) {
+      resultsCount.textContent = "";
+      resultsContainer.innerHTML = "<p>Please enter a valid search term with at least 2 characters.</p>";
+    } else {
+      const filtered = services.filter(service =>
+        service.title.toLowerCase().includes(query) ||
+        service.description.toLowerCase().includes(query) ||
+        service.keywords.some(keyword => keyword.includes(query))
+      );
+
+      resultsCount.textContent = `${filtered.length} result${filtered.length !== 1 ? "s" : ""} found`;
+
+      if (filtered.length === 0) {
+        resultsContainer.innerHTML = `<p>No results found for "<strong>${queryRaw}</strong>".</p>`;
+      } else {
+        filtered.forEach(service => {
+          const item = document.createElement('div');
+          item.className = 'search-item';
+          item.innerHTML = `
+            <h4>${highlight(service.title, query)}</h4>
+            <p>${highlight(service.description, query)}</p>
+            <a href="${service.url}" target="_blank" rel="noopener" class="view-details-btn">View Details</a>
+          `;
+          resultsContainer.appendChild(item);
+        });
+      }
+    }
+  </script>
+
+</body>
+
+</html>
